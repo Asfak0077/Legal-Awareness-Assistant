@@ -1,0 +1,144 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: "Multilingual Legal Awareness & Complaint Assistance System (Hackathon\
+  \ — AWS Free Tier)\n"
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: nodejs18.x
+    MemorySize: 256
+Resources:
+  LegalMappingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: LegalMapping
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: Category
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Category
+        KeyType: HASH
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LegalAwarenessLambdaRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+      - PolicyName: LegalAwarenessLambdaPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Sid: ComprehendDetectLanguage
+            Effect: Allow
+            Action:
+            - comprehend:DetectDominantLanguage
+            Resource: '*'
+          - Sid: TranslateText
+            Effect: Allow
+            Action:
+            - translate:TranslateText
+            Resource: '*'
+          - Sid: DynamoDBGetItemLegalMapping
+            Effect: Allow
+            Action:
+            - dynamodb:GetItem
+            Resource:
+              Fn::GetAtt:
+              - LegalMappingTable
+              - Arn
+          - Sid: CloudWatchLogs
+            Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource:
+              Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LegalAwarenessFunction:*
+  LegalAwarenessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: LegalAwarenessFunction
+      Handler: handler.handler
+      CodeUri: s3://legal-awareness-code-1772443961/1bcabd43b24b741e493282f4b3a794d1
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+      Environment:
+        Variables:
+          AWS_REGION_OVERRIDE: ap-south-1
+          LEGAL_TABLE_NAME: LegalMapping
+      Events:
+        AnalyzePost:
+          Type: Api
+          Properties:
+            Path: /analyze
+            Method: post
+            RestApiId:
+              Ref: LegalAwarenessApi
+        AnalyzeOptions:
+          Type: Api
+          Properties:
+            Path: /analyze
+            Method: options
+            RestApiId:
+              Ref: LegalAwarenessApi
+  LegalAwarenessApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: LegalAwarenessApi
+      StageName: prod
+      Cors:
+        AllowOrigin: "'*'"
+        AllowMethods: "'POST,OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Fn::Sub: legal-awareness-frontend-${AWS::AccountId}
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: FrontendBucket
+      PolicyDocument:
+        Statement:
+        - Sid: PublicReadFrontend
+          Effect: Allow
+          Principal: '*'
+          Action: s3:GetObject
+          Resource:
+            Fn::Sub: ${FrontendBucket.Arn}/*
+Outputs:
+  ApiGatewayUrl:
+    Description: API Gateway endpoint URL (POST /analyze)
+    Value:
+      Fn::Sub: https://${LegalAwarenessApi}.execute-api.${AWS::Region}.amazonaws.com/prod/analyze
+  S3WebsiteUrl:
+    Description: S3 static website URL for the frontend
+    Value:
+      Fn::GetAtt:
+      - FrontendBucket
+      - WebsiteURL
+  LambdaFunctionArn:
+    Description: ARN of the Legal Awareness Lambda function
+    Value:
+      Fn::GetAtt:
+      - LegalAwarenessFunction
+      - Arn

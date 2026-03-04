@@ -1,0 +1,169 @@
+# infra/template.yaml — AWS SAM Template
+# =========================================================
+# Multilingual Legal Awareness & Complaint Assistance System
+#
+# Resources:
+#   - DynamoDB table (LegalMapping, PAY_PER_REQUEST)
+#   - Lambda function (Node.js 18.x, 256 MB, 30 s)
+#   - API Gateway REST API  (POST /analyze)
+#   - S3 bucket for static frontend hosting
+#   - IAM execution role with least-privilege policy
+#
+# Deploy:
+#   sam build && sam deploy --guided --capabilities CAPABILITY_IAM
+# =========================================================
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Multilingual Legal Awareness & Complaint Assistance System
+  (Hackathon — AWS Free Tier)
+
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: nodejs18.x
+    MemorySize: 256
+
+Resources:
+
+  # ─────────────────────────────────────────
+  # DynamoDB Table
+  # ─────────────────────────────────────────
+  LegalMappingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: LegalMapping
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: Category
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Category
+          KeyType: HASH
+
+  # ─────────────────────────────────────────
+  # IAM Role — least-privilege for Lambda
+  # ─────────────────────────────────────────
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LegalAwarenessLambdaRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: LegalAwarenessLambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # Amazon Comprehend — language detection only
+              - Sid: ComprehendDetectLanguage
+                Effect: Allow
+                Action:
+                  - 'comprehend:DetectDominantLanguage'
+                Resource: '*'
+              # Amazon Translate — translate text only
+              - Sid: TranslateText
+                Effect: Allow
+                Action:
+                  - 'translate:TranslateText'
+                Resource: '*'
+              # DynamoDB — read single item from LegalMapping
+              - Sid: DynamoDBGetItemLegalMapping
+                Effect: Allow
+                Action:
+                  - 'dynamodb:GetItem'
+                Resource: !GetAtt LegalMappingTable.Arn
+              # CloudWatch Logs — standard Lambda logging
+              - Sid: CloudWatchLogs
+                Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/LegalAwarenessFunction:*'
+
+  # ─────────────────────────────────────────
+  # Lambda Function
+  # ─────────────────────────────────────────
+  LegalAwarenessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: LegalAwarenessFunction
+      Handler: handler.handler
+      CodeUri: ../backend/lambda/
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Environment:
+        Variables:
+          AWS_REGION_OVERRIDE: ap-south-1
+          LEGAL_TABLE_NAME: LegalMapping
+      Events:
+        AnalyzePost:
+          Type: Api
+          Properties:
+            Path: /analyze
+            Method: post
+            RestApiId: !Ref LegalAwarenessApi
+        AnalyzeOptions:
+          Type: Api
+          Properties:
+            Path: /analyze
+            Method: options
+            RestApiId: !Ref LegalAwarenessApi
+
+  # ─────────────────────────────────────────
+  # API Gateway
+  # ─────────────────────────────────────────
+  LegalAwarenessApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: LegalAwarenessApi
+      StageName: prod
+      Cors:
+        AllowOrigin: "'*'"
+        AllowMethods: "'POST,OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+
+  # ─────────────────────────────────────────
+  # S3 Bucket — static frontend hosting
+  # ─────────────────────────────────────────
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'legal-awareness-frontend-${AWS::AccountId}'
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FrontendBucket
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadFrontend
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub '${FrontendBucket.Arn}/*'
+
+Outputs:
+  ApiGatewayUrl:
+    Description: API Gateway endpoint URL (POST /analyze)
+    Value: !Sub 'https://${LegalAwarenessApi}.execute-api.${AWS::Region}.amazonaws.com/prod/analyze'
+  S3WebsiteUrl:
+    Description: S3 static website URL for the frontend
+    Value: !GetAtt FrontendBucket.WebsiteURL
+  LambdaFunctionArn:
+    Description: ARN of the Legal Awareness Lambda function
+    Value: !GetAtt LegalAwarenessFunction.Arn

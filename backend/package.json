@@ -1,0 +1,23 @@
+{
+  "name": "legal-awareness-backend",
+  "version": "1.0.0",
+  "description": "Backend Lambda functions for the Multilingual Legal Awareness & Complaint Assistance System",
+  "main": "lambda/handler.js",
+  "scripts": {
+    "test": "jest --verbose --forceExit",
+    "zip": "cd lambda && zip -r ../../infra/lambda-package.zip . && cd .."
+  },
+  "dependencies": {
+    "@aws-sdk/client-comprehend": "^3.0.0",
+    "@aws-sdk/client-translate": "^3.0.0",
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

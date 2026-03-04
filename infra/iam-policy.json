@@ -1,0 +1,39 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ComprehendDetectLanguage",
+      "Effect": "Allow",
+      "Action": [
+        "comprehend:DetectDominantLanguage"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "TranslateText",
+      "Effect": "Allow",
+      "Action": [
+        "translate:TranslateText"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DynamoDBGetItemLegalMapping",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem"
+      ],
+      "Resource": "arn:aws:dynamodb:ap-south-1:*:table/LegalMapping"
+    },
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:ap-south-1:*:log-group:/aws/lambda/LegalAwarenessFunction:*"
+    }
+  ]
+}

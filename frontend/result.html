@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal Awareness Assistant — Your Result</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title">
+        <span class="flag">&#127470;&#127475;</span>
+        Legal Awareness Assistant
+      </h1>
+      <p class="site-subtitle">कानूनी जागरूकता सहायक</p>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="container">
+    <!-- Disclaimer banner -->
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer / अस्वीकरण:</strong>
+      <p>This tool provides awareness and draft assistance only. It is NOT legal advice.
+         Please consult a licensed advocate for legal counsel.</p>
+      <p>यह उपकरण केवल जागरूकता और ड्राफ्ट सहायता प्रदान करता है। यह कानूनी सलाह नहीं है।
+         कृपया कानूनी परामर्श के लिए एक लाइसेंस प्राप्त वकील से संपर्क करें।</p>
+    </div>
+
+    <!-- No data fallback -->
+    <div id="noData" class="info-box hidden">
+      <p>No result data found. <a href="index.html">Go back and submit a complaint</a>.</p>
+    </div>
+
+    <!-- Result sections (hidden until data is loaded) -->
+    <section id="resultSection" class="hidden">
+
+      <!-- ─── Detection & Classification ─── -->
+      <div class="result-card">
+        <h2 class="card-title">Detection &amp; Classification</h2>
+        <table class="result-table">
+          <tr>
+            <th>Detected Language</th>
+            <td id="rDetectedLang">—</td>
+          </tr>
+          <tr>
+            <th>Category</th>
+            <td id="rCategory">—</td>
+          </tr>
+          <tr>
+            <th>Confidence</th>
+            <td id="rConfidence">—</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ─── Constitutional Mapping ─── -->
+      <div class="result-card">
+        <h2 class="card-title">Constitutional Mapping</h2>
+        <table class="result-table">
+          <tr>
+            <th>Article Number</th>
+            <td id="rArticle">—</td>
+          </tr>
+          <tr>
+            <th>Explanation</th>
+            <td id="rExplanation">—</td>
+          </tr>
+          <tr>
+            <th>Relevant Law</th>
+            <td id="rLaw">—</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ─── Authority & Portal ─── -->
+      <div class="result-card">
+        <h2 class="card-title">Suggested Authority</h2>
+        <table class="result-table">
+          <tr>
+            <th>Authority</th>
+            <td id="rAuthority">—</td>
+          </tr>
+          <tr>
+            <th>Portal</th>
+            <td id="rPortal">—</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ─── Draft Complaint (English) ─── -->
+      <div class="result-card">
+        <h2 class="card-title">Draft Complaint — English</h2>
+        <textarea id="rDraftEN" class="draft-textarea" readonly rows="12"></textarea>
+        <button class="btn-copy" data-target="rDraftEN">📋 Copy Draft</button>
+      </div>
+
+      <!-- ─── Draft Complaint (Localized) ─── -->
+      <div class="result-card">
+        <h2 class="card-title">Draft Complaint — Localized</h2>
+        <textarea id="rDraftLocal" class="draft-textarea" readonly rows="12"></textarea>
+        <button class="btn-copy" data-target="rDraftLocal">📋 Copy Draft</button>
+      </div>
+
+      <!-- ─── Action buttons ─── -->
+      <div class="action-row">
+        <a href="index.html" class="btn-primary">← Start Over / नई शिकायत दर्ज करें</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p class="disclaimer-text">
+        ⚠️ This tool provides awareness and draft assistance only. It is NOT legal advice.
+        Please consult a licensed advocate for legal counsel.
+      </p>
+      <p class="footer-meta">Multilingual Legal Awareness System — Hackathon Project</p>
+    </div>
+  </footer>
+
+  <!-- ===== INLINE JS ===== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ---- Read stored result ----
+      const raw = sessionStorage.getItem('complaintResult');
+      if (!raw) {
+        document.getElementById('noData').classList.remove('hidden');
+        return;
+      }
+
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        document.getElementById('noData').classList.remove('hidden');
+        return;
+      }
+
+      // Show result section
+      document.getElementById('resultSection').classList.remove('hidden');
+
+      // ---- Populate fields ----
+      setText('rDetectedLang', data.detectedLanguage || '—');
+      setText('rCategory', formatCategory(data.category));
+      setText('rConfidence', data.confidence != null ? (data.confidence * 100).toFixed(1) + '%' : '—');
+      setText('rArticle', data.articleNumber || '—');
+      setText('rExplanation', data.articleExplanation || '—');
+      setText('rLaw', data.relevantLaw || '—');
+      setText('rAuthority', data.authority || '—');
+
+      // Portal link
+      var portalEl = document.getElementById('rPortal');
+      if (data.portalLink) {
+        portalEl.innerHTML = '<a href="' + escHtml(data.portalLink) + '" target="_blank" rel="noopener">'
+          + escHtml(data.portalLink) + '</a>';
+      } else {
+        portalEl.textContent = '—';
+      }
+
+      // Draft textareas
+      document.getElementById('rDraftEN').value = data.draftEN || '';
+      document.getElementById('rDraftLocal').value = data.draftLocalized || data.draftEN || '';
+
+      // ---- Copy buttons ----
+      document.querySelectorAll('.btn-copy').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var target = document.getElementById(this.dataset.target);
+          if (!target) return;
+          navigator.clipboard.writeText(target.value).then(function () {
+            btn.textContent = '✅ Copied!';
+            setTimeout(function () { btn.textContent = '📋 Copy Draft'; }, 2000);
+          }).catch(function () {
+            // Fallback: select all
+            target.select();
+            document.execCommand('copy');
+            btn.textContent = '✅ Copied!';
+            setTimeout(function () { btn.textContent = '📋 Copy Draft'; }, 2000);
+          });
+        });
+      });
+
+      // ---- Helpers ----
+      function setText(id, text) {
+        document.getElementById(id).textContent = text;
+      }
+
+      function escHtml(str) {
+        var d = document.createElement('div');
+        d.appendChild(document.createTextNode(str));
+        return d.innerHTML;
+      }
+
+      function formatCategory(cat) {
+        if (!cat) return '—';
+        // "OnlineFinancialFraud" → "Online Financial Fraud"
+        return cat.replace(/([a-z])([A-Z])/g, '$1 $2');
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal Awareness Assistant — File Your Complaint</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title">
+        <span class="flag">&#127470;&#127475;</span>
+        Legal Awareness Assistant
+      </h1>
+      <p class="site-subtitle">कानूनी जागरूकता सहायक</p>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="container">
+    <!-- Disclaimer banner -->
+    <div class="disclaimer-box">
+      <strong>⚠️ Disclaimer / अस्वीकरण:</strong>
+      <p>This tool provides awareness and draft assistance only. It is NOT legal advice.
+         Please consult a licensed advocate for legal counsel.</p>
+      <p>यह उपकरण केवल जागरूकता और ड्राफ्ट सहायता प्रदान करता है। यह कानूनी सलाह नहीं है।
+         कृपया कानूनी परामर्श के लिए एक लाइसेंस प्राप्त वकील से संपर्क करें।</p>
+    </div>
+
+    <!-- Language notice -->
+    <p class="lang-notice">
+      <em>आप किसी भी भारतीय भाषा में लिख सकते हैं — You can write in any Indian language</em>
+    </p>
+
+    <!-- Complaint form -->
+    <form id="complaintForm" class="complaint-form" novalidate>
+      <div class="form-group">
+        <label for="complaintText">Describe your complaint / अपनी शिकायत लिखें</label>
+        <textarea
+          id="complaintText"
+          name="complaintText"
+          rows="7"
+          required
+          minlength="10"
+          maxlength="2000"
+          placeholder="अपनी शिकायत यहाँ लिखें...&#10;உங்கள் புகாரை இங்கே எழுதுங்கள்...&#10;Write your complaint here..."
+        ></textarea>
+        <span class="char-count"><span id="charCount">0</span> / 2000</span>
+      </div>
+
+      <div class="form-group">
+        <label for="userState">Select your State / अपना राज्य चुनें</label>
+        <select id="userState" name="userState" required>
+          <option value="" disabled selected>-- Choose State --</option>
+          <option value="TN">Tamil Nadu (तमिलनाडु)</option>
+          <option value="MH">Maharashtra (महाराष्ट्र)</option>
+          <option value="UP">Uttar Pradesh (उत्तर प्रदेश)</option>
+        </select>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn-primary">
+        <span class="btn-text">Submit Complaint / शिकायत दर्ज करें</span>
+        <span class="btn-loading hidden">
+          <span class="spinner"></span> Processing...
+        </span>
+      </button>
+
+      <!-- Error message area -->
+      <div id="errorBox" class="error-box hidden" role="alert"></div>
+    </form>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p class="disclaimer-text">
+        ⚠️ This tool provides awareness and draft assistance only. It is NOT legal advice.
+        Please consult a licensed advocate for legal counsel.
+      </p>
+      <p class="footer-meta">Multilingual Legal Awareness System — Hackathon Project</p>
+    </div>
+  </footer>
+
+  <!-- ===== INLINE JS ===== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ---- Config ----
+      const API_URL = 'https://nk7mck4dfj.execute-api.ap-south-1.amazonaws.com/prod/analyze';
+
+      // ---- DOM refs ----
+      const form = document.getElementById('complaintForm');
+      const textarea = document.getElementById('complaintText');
+      const charCount = document.getElementById('charCount');
+      const stateSelect = document.getElementById('userState');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = submitBtn.querySelector('.btn-text');
+      const btnLoading = submitBtn.querySelector('.btn-loading');
+      const errorBox = document.getElementById('errorBox');
+
+      // ---- Character counter ----
+      textarea.addEventListener('input', function () {
+        charCount.textContent = this.value.length;
+        if (this.value.length > 2000) {
+          charCount.parentElement.classList.add('over-limit');
+        } else {
+          charCount.parentElement.classList.remove('over-limit');
+        }
+      });
+
+      // ---- Helpers ----
+      function setLoading(loading) {
+        submitBtn.disabled = loading;
+        btnText.classList.toggle('hidden', loading);
+        btnLoading.classList.toggle('hidden', !loading);
+      }
+
+      function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.classList.remove('hidden');
+      }
+
+      function hideError() {
+        errorBox.textContent = '';
+        errorBox.classList.add('hidden');
+      }
+
+      // ---- Form submit ----
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        hideError();
+
+        const complaintText = textarea.value.trim();
+        const userState = stateSelect.value;
+
+        // Client-side validation
+        if (complaintText.length < 10) {
+          showError('Please describe your complaint in at least 10 characters.');
+          return;
+        }
+        if (complaintText.length > 2000) {
+          showError('Complaint cannot exceed 2000 characters.');
+          return;
+        }
+        if (!userState) {
+          showError('Please select your state.');
+          return;
+        }
+
+        setLoading(true);
+
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ complaintText, userState }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            showError(data.error || 'Something went wrong. Please try again.');
+            setLoading(false);
+            return;
+          }
+
+          // Store result and redirect
+          sessionStorage.setItem('complaintResult', JSON.stringify(data));
+          window.location.href = 'result.html';
+        } catch (err) {
+          console.error('API error:', err);
+          showError('Unable to reach the server. Please check your connection and try again.');
+          setLoading(false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

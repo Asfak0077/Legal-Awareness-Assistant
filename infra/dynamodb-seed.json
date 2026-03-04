@@ -1,0 +1,172 @@
+{
+  "LegalMapping": [
+    {
+      "PutRequest": {
+        "Item": {
+          "Category": { "S": "OnlineFinancialFraud" },
+          "ArticleNumber": { "S": "Article 21" },
+          "ArticleExplanation": { "S": "Article 21 guarantees every person the right to live with dignity and personal safety. If someone steals your money online, it directly threatens your livelihood and security, which this article protects." },
+          "RelevantLaw": { "S": "Information Technology Act, 2000 (Sections 43, 66, 66C, 66D)" },
+          "Authority_TN": { "S": "Tamil Nadu Police - Cyber Crime Wing, CB-CID, Chennai" },
+          "Authority_MH": { "S": "Maharashtra Cyber Department, BKC Cyber Police Station, Mumbai" },
+          "Authority_UP": { "S": "Uttar Pradesh Police - Cyber Crime Police Station, Lucknow" },
+          "PortalLink": { "S": "https://cybercrime.gov.in" },
+          "KeywordsEN": {
+            "L": [
+              { "S": "fraud" },
+              { "S": "scam" },
+              { "S": "bank" },
+              { "S": "money stolen" },
+              { "S": "UPI" },
+              { "S": "phishing" },
+              { "S": "transaction" },
+              { "S": "debit" },
+              { "S": "credit card" },
+              { "S": "OTP" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "Category": { "S": "CybercrimeNonFinancial" },
+          "ArticleNumber": { "S": "Article 19 & Article 21" },
+          "ArticleExplanation": { "S": "Article 19 protects your right to express yourself freely, and Article 21 protects your life and personal liberty. Online harassment, stalking, or identity theft violates both your freedom of expression and your right to live without fear." },
+          "RelevantLaw": { "S": "Information Technology Act, 2000 (Sections 66E, 67, 67A, 67B)" },
+          "Authority_TN": { "S": "Tamil Nadu Police - Cyber Crime Wing, CB-CID, Chennai" },
+          "Authority_MH": { "S": "Maharashtra Cyber Department, BKC Cyber Police Station, Mumbai" },
+          "Authority_UP": { "S": "Uttar Pradesh Police - Cyber Crime Police Station, Lucknow" },
+          "PortalLink": { "S": "https://cybercrime.gov.in" },
+          "KeywordsEN": {
+            "L": [
+              { "S": "harassment" },
+              { "S": "stalking" },
+              { "S": "hacking" },
+              { "S": "morphing" },
+              { "S": "blackmail" },
+              { "S": "threat" },
+              { "S": "identity theft" },
+              { "S": "defamation" },
+              { "S": "cyberbullying" },
+              { "S": "privacy" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "Category": { "S": "DomesticViolence" },
+          "ArticleNumber": { "S": "Article 21" },
+          "ArticleExplanation": { "S": "Article 21 guarantees your right to live with dignity, safety, and freedom from violence. No person, including a family member or spouse, can take away your right to live without fear of physical, emotional, or economic abuse." },
+          "RelevantLaw": { "S": "Protection of Women from Domestic Violence Act, 2005" },
+          "Authority_TN": { "S": "Tamil Nadu State Commission for Women, Chennai & Protection Officer, District Magistrate Office" },
+          "Authority_MH": { "S": "Maharashtra State Commission for Women, Mumbai & Protection Officer, District Magistrate Office" },
+          "Authority_UP": { "S": "Uttar Pradesh State Commission for Women, Lucknow & Protection Officer, District Magistrate Office" },
+          "PortalLink": { "S": "http://www.ncw.nic.in/ncw-cells/complaint-registration" },
+          "KeywordsEN": {
+            "L": [
+              { "S": "domestic violence" },
+              { "S": "beating" },
+              { "S": "abuse" },
+              { "S": "husband" },
+              { "S": "wife" },
+              { "S": "dowry" },
+              { "S": "torture" },
+              { "S": "family violence" },
+              { "S": "marital" },
+              { "S": "protection order" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "Category": { "S": "ConsumerComplaint" },
+          "ArticleNumber": { "S": "Article 14 & Article 21" },
+          "ArticleExplanation": { "S": "Article 14 ensures every person is treated equally under the law, including as a buyer of goods and services. Article 21 protects your right to a dignified life, which includes not being cheated by sellers or service providers." },
+          "RelevantLaw": { "S": "Consumer Protection Act, 2019" },
+          "Authority_TN": { "S": "Tamil Nadu State Consumer Disputes Redressal Commission, Chennai" },
+          "Authority_MH": { "S": "Maharashtra State Consumer Disputes Redressal Commission, Mumbai" },
+          "Authority_UP": { "S": "Uttar Pradesh State Consumer Disputes Redressal Commission, Lucknow" },
+          "PortalLink": { "S": "https://consumerhelpline.gov.in" },
+          "KeywordsEN": {
+            "L": [
+              { "S": "defective product" },
+              { "S": "refund" },
+              { "S": "warranty" },
+              { "S": "overcharge" },
+              { "S": "misleading" },
+              { "S": "advertisement" },
+              { "S": "service complaint" },
+              { "S": "billing" },
+              { "S": "delivery" },
+              { "S": "consumer rights" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "Category": { "S": "EmploymentLabourDispute" },
+          "ArticleNumber": { "S": "Article 14 & Article 19" },
+          "ArticleExplanation": { "S": "Article 14 ensures all workers are treated equally under the law regardless of background. Article 19 protects your right to form associations and unions, which includes the right to fair treatment at your workplace." },
+          "RelevantLaw": { "S": "Industrial Disputes Act, 1947" },
+          "Authority_TN": { "S": "Office of the Labour Commissioner, Tamil Nadu Labour Department, Chennai" },
+          "Authority_MH": { "S": "Office of the Labour Commissioner, Maharashtra Labour Department, Mumbai" },
+          "Authority_UP": { "S": "Office of the Labour Commissioner, Uttar Pradesh Labour Department, Lucknow" },
+          "PortalLink": { "S": "https://labour.gov.in/grievance" },
+          "KeywordsEN": {
+            "L": [
+              { "S": "salary" },
+              { "S": "wages" },
+              { "S": "termination" },
+              { "S": "fired" },
+              { "S": "employer" },
+              { "S": "workplace" },
+              { "S": "overtime" },
+              { "S": "provident fund" },
+              { "S": "harassment at work" },
+              { "S": "labour rights" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "Category": { "S": "PropertyDispute" },
+          "ArticleNumber": { "S": "Article 14 & Article 21" },
+          "ArticleExplanation": { "S": "Article 14 ensures equal treatment in property matters, so no one can illegally deny you your rightful ownership. Article 21 protects your right to shelter and livelihood, which are directly linked to property rights." },
+          "RelevantLaw": { "S": "Transfer of Property Act, 1882" },
+          "Authority_TN": { "S": "District Collector & Revenue Divisional Officer, Tamil Nadu Revenue Department" },
+          "Authority_MH": { "S": "District Collector & Sub-Divisional Officer, Maharashtra Revenue Department" },
+          "Authority_UP": { "S": "District Collector & Tehsildar, Uttar Pradesh Revenue Department (Board of Revenue)" },
+          "PortalLink": { "S": "https://pgportal.gov.in" },
+          "KeywordsEN": {
+            "L": [
+              { "S": "land" },
+              { "S": "property" },
+              { "S": "encroachment" },
+              { "S": "title deed" },
+              { "S": "registration" },
+              { "S": "tenant" },
+              { "S": "landlord" },
+              { "S": "eviction" },
+              { "S": "boundary" },
+              { "S": "inheritance" }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

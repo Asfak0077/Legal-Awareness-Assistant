@@ -1,0 +1,391 @@
+/* ============================================================
+   Legal Awareness Assistant — Stylesheet
+   Colors: Saffron (#FF6600), White (#FFFFFF), Dark Blue (#003580)
+   Mobile-first, responsive, RTL-ready
+   ============================================================ */
+
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', 'Noto Sans', 'Arial', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #222;
+  background: #f5f6fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* RTL support */
+[dir="rtl"] body {
+  direction: rtl;
+  text-align: right;
+}
+
+/* ---------- Container ---------- */
+.container {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  background: #003580;
+  color: #fff;
+  padding: 1.25rem 0;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.site-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.site-title .flag {
+  margin-right: 0.4rem;
+}
+
+.site-subtitle {
+  font-size: 1rem;
+  opacity: 0.85;
+  margin-top: 0.2rem;
+  font-weight: 400;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: #003580;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+  margin-top: auto;
+  font-size: 0.85rem;
+}
+
+.site-footer .disclaimer-text {
+  opacity: 0.9;
+  margin-bottom: 0.3rem;
+}
+
+.site-footer .footer-meta {
+  opacity: 0.6;
+}
+
+/* ---------- Disclaimer Box ---------- */
+.disclaimer-box {
+  background: #fff8f0;
+  border: 2px solid #FF6600;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.disclaimer-box strong {
+  color: #FF6600;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.disclaimer-box p {
+  margin-top: 0.35rem;
+  color: #444;
+}
+
+/* ---------- Language Notice ---------- */
+.lang-notice {
+  text-align: center;
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ---------- Form ---------- */
+.complaint-form {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #003580;
+}
+
+textarea,
+select {
+  width: 100%;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  background: #fafafa;
+}
+
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #FF6600;
+  background: #fff;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.char-count {
+  display: block;
+  text-align: right;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.25rem;
+}
+
+.char-count.over-limit {
+  color: #cc0000;
+  font-weight: 700;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  display: inline-block;
+  background: #FF6600;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.1s;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background: #e55c00;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Loading spinner */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 0.4rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Error Box ---------- */
+.error-box {
+  background: #ffeaea;
+  border: 1px solid #cc0000;
+  border-radius: 6px;
+  color: #cc0000;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* ---------- Info Box ---------- */
+.info-box {
+  background: #e8f0fe;
+  border: 1px solid #003580;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.info-box a {
+  color: #FF6600;
+  font-weight: 600;
+}
+
+/* ---------- Hidden Utility ---------- */
+.hidden {
+  display: none !important;
+}
+
+/* ============================================================
+   RESULT PAGE STYLES
+   ============================================================ */
+
+/* Result card */
+.result-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.card-title {
+  color: #003580;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid #FF6600;
+}
+
+/* Result table */
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.result-table th,
+.result-table td {
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.95rem;
+}
+
+.result-table th {
+  color: #003580;
+  font-weight: 600;
+  white-space: nowrap;
+  width: 140px;
+}
+
+.result-table td {
+  color: #333;
+}
+
+.result-table tr + tr {
+  border-top: 1px solid #eee;
+}
+
+.result-table a {
+  color: #FF6600;
+  word-break: break-all;
+}
+
+/* Draft textarea */
+.draft-textarea {
+  width: 100%;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  font-family: 'Courier New', monospace;
+  background: #fafafa;
+  resize: vertical;
+  min-height: 160px;
+  line-height: 1.5;
+}
+
+/* Copy button */
+.btn-copy {
+  display: inline-block;
+  background: #003580;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+
+.btn-copy:hover {
+  background: #002560;
+}
+
+/* Action row */
+.action-row {
+  text-align: center;
+  margin: 1.5rem 0 2rem;
+}
+
+.action-row .btn-primary {
+  max-width: 360px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (min-width: 600px) {
+  .site-title {
+    font-size: 1.75rem;
+  }
+
+  .complaint-form {
+    padding: 2rem;
+  }
+
+  .result-table th {
+    width: 170px;
+  }
+
+  .btn-primary {
+    width: auto;
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .result-table th,
+  .result-table td {
+    display: block;
+    width: 100%;
+    padding: 0.3rem 0;
+  }
+
+  .result-table th {
+    font-size: 0.85rem;
+    padding-top: 0.6rem;
+  }
+
+  .result-card {
+    padding: 1rem;
+  }
+}
